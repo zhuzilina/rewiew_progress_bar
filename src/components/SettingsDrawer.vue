@@ -154,11 +154,11 @@ function handleAddSlogan() {
   display: flex; align-items: center; justify-content: space-between;
   padding: 24px 28px; border-bottom: 1px solid #F0E8DE; flex-shrink: 0;
 }
-.drawer-title { font-size: 20px; font-weight: 800; margin: 0; color: #5D4037; }
+.drawer-title { font-size: 30px; font-weight: 800; margin: 0; color: #5D4037; }
 .close-btn {
   background: #FFF5F0; border: none; color: #B08878;
   width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
-  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  font-size: 27px; display: flex; align-items: center; justify-content: center;
   transition: all .2s;
 }
 .close-btn:hover { background: #FF7B9C; color: #FFF; }
@@ -181,7 +181,7 @@ function handleAddSlogan() {
 .s-fields { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .s-input {
   background: #FFF8F0; border: 1.5px solid #F0E8DE; border-radius: 12px;
-  color: #5D4037; padding: 8px 12px; font-size: 14px;
+  color: #5D4037; padding: 8px 12px; font-size: 21px;
   outline: none; transition: border-color .2s, box-shadow .2s;
   font-family: inherit;
 }
@@ -193,14 +193,14 @@ function handleAddSlogan() {
 .s-meta-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .s-label {
   display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: #B08878; font-weight: 600;
+  font-size: 18px; color: #B08878; font-weight: 600;
 }
 .s-num { width: 76px; text-align: center; }
 .s-target { width: 100px; }
-.s-hint { font-size: 11px; color: #C4A99A; white-space: nowrap; font-weight: 600; }
+.s-hint { font-size: 17px; color: #C4A99A; white-space: nowrap; font-weight: 600; }
 .s-delete-btn {
   background: transparent; border: none; color: #FFB5C2;
-  cursor: pointer; font-size: 18px; padding: 8px 6px;
+  cursor: pointer; font-size: 27px; padding: 8px 6px;
   border-radius: 999px; transition: all .2s;
   flex-shrink: 0; margin-top: 8px;
 }
@@ -211,7 +211,7 @@ function handleAddSlogan() {
   margin: 24px 0 16px;
 }
 .section-title {
-  font-size: 15px;
+  font-size: 23px;
   font-weight: 700;
   color: #5D4037;
   margin-bottom: 4px;
@@ -231,19 +231,19 @@ function handleAddSlogan() {
 }
 .slogan-text {
   flex: 1;
-  font-size: 14px;
+  font-size: 21px;
   color: #5D4037;
   line-height: 1.4;
 }
 .s-delete-slogan {
   margin-top: 0;
   padding: 4px 6px;
-  font-size: 14px;
+  font-size: 21px;
 }
 .s-add-slogan-btn {
   width: 100%; margin-top: 8px; padding: 12px;
   background: #FFF5F0; border: 1.5px dashed #F0E8DE; border-radius: 999px;
-  color: #B08878; font-size: 14px; font-weight: 600; cursor: pointer;
+  color: #B08878; font-size: 21px; font-weight: 600; cursor: pointer;
   transition: all .2s; font-family: inherit;
 }
 .s-add-slogan-btn:hover {
@@ -251,9 +251,9 @@ function handleAddSlogan() {
 }
 .s-add-btn {
   width: 100%; margin-top: 18px; padding: 14px;
-  background: linear-gradient(135deg, #FF7B9C, #D47BC6);
+  background: #FF7B9C;
   border: none; border-radius: 999px;
-  color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+  color: #fff; font-size: 23px; font-weight: 700; cursor: pointer;
   transition: all .2s; font-family: inherit;
   box-shadow: 0 4px 16px rgba(255,123,156,0.25);
 }

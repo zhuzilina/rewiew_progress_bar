@@ -1,10 +1,62 @@
 const express = require('express')
+const path = require('path')
+const fs = require('fs')
 const db = require('./db.cjs')
+const auth = require('./auth.cjs')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
 app.use(express.json())
+
+// ── Serve built frontend (production) ──────────────────────
+const distPath = path.join(__dirname, '..', 'dist')
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath))
+  console.log(`✓ Serving static files from ${distPath}`)
+}
+
+// ── Auth ──────────────────────────────────────────────────
+auth.initAuth()
+
+app.get('/api/auth/challenge', (_req, res) => {
+  res.json(auth.getChallenge())
+})
+
+app.post('/api/auth/login', (req, res) => {
+  const { challengeId, proof } = req.body
+  if (!challengeId || !proof) {
+    return res.status(400).json({ error: '缺少 challengeId 或 proof' })
+  }
+  if (!auth.verifyProof(challengeId, proof)) {
+    return res.status(401).json({ error: '密码错误' })
+  }
+  const token = auth.createSession()
+  res.cookie('auth_token', token, {
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/',
+  })
+  res.json({ success: true })
+})
+
+app.get('/api/auth/check', (req, res) => {
+  const rawCookie = req.headers.cookie || ''
+  const cookies = Object.fromEntries(
+    rawCookie.split(';').filter(Boolean).map((c) => {
+      const i = c.indexOf('=')
+      return [c.substring(0, i).trim(), c.substring(i + 1).trim()]
+    }),
+  )
+  if (cookies.auth_token && auth.validateSession(cookies.auth_token)) {
+    return res.json({ authenticated: true })
+  }
+  res.status(401).json({ authenticated: false })
+})
+
+// 保护所有 /api/* 路由（跳过 /api/auth/*）
+app.use('/api', auth.authMiddleware)
 
 // ── Items ───────────────────────────────────────────────
 
@@ -146,6 +198,16 @@ app.delete('/api/slogans/:id', (req, res) => {
   }
   db.deleteSlogan(id)
   res.json({ success: true })
+})
+
+// ── SPA fallback ───────────────────────────────────────────
+app.get('*', (_req, res) => {
+  const indexPath = path.join(distPath, 'index.html')
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath)
+  } else {
+    res.status(404).json({ error: 'Not found' })
+  }
 })
 
 // ── Error handler ───────────────────────────────────────

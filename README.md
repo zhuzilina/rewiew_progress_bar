@@ -65,6 +65,7 @@
 - **今日完成度拖拽** — 滑块 0~100%，按钮微调 ±1% / ±10%
 - **🌸 科目管理抽屉** — 编辑名称、备考天数、目标分数（`step="0.0001"`）
 - **💬 自定义标语** — 支持多条标语，每页随机展示，可在设置中增删
+- **🔒 访问密码锁** — 配置文件设置密码，Cookie 7 天免登录，挑战-响应加密传输
 - **SQLite 持久化** — `items` + `daily_records` + `slogans` 三表存储
 
 ---
@@ -85,10 +86,43 @@ npm install
 npm run dev    # Vite :8080 + Express :3001
 ```
 
+## Docker 部署
+
+```bash
+# 构建镜像（多阶段构建，自动优化体积）
+docker build -t progress-bar .
+
+# 运行容器（默认密码 123456）
+docker run -d \
+  -p 3001:3001 \
+  -v progress-data:/app/data \
+  --name review-progress \
+  progress-bar
+
+# 如需自定义密码（提前计算 SHA-256 并挂载 auth.json）
+echo -n "你的密码" | sha256sum
+# 将输出的 hash 写入 auth.json 的 password_hash 字段，然后挂载：
+docker run -d \
+  -p 3001:3001 \
+  -v progress-data:/app/data \
+  -v /path/to/auth.json:/app/server/auth.json \
+  --name review-progress \
+  progress-bar
+```
+
+生产镜像特点：
+
+- **多阶段构建**：构建阶段安装完整工具链，产线阶段仅保留运行所需
+- **非 root 用户**：以 `node` 用户运行，增强安全性
+- **健康检查**：每 30s 检测 API 是否存活
+- **数据持久化**：通过 `VOLUME /app/data` 挂载 SQLite 数据库
+
 ## 项目结构
 
 ```text
 server/
+├── auth.cjs    # 认证模块（挑战-响应、会话管理）
+├── auth.json   # 密码哈希配置（自动生成）
 ├── db.cjs      # SQLite 建表、种子、CRUD
 └── index.cjs   # Express API
 
@@ -96,7 +130,11 @@ src/
 ├── api.js                # fetch 封装
 ├── App.vue               # 主页面
 └── components/
+    ├── AuthGate.vue      # 密码锁界面
     └── SettingsDrawer.vue # 科目管理抽屉
+
+Dockerfile      # 多阶段生产构建
+.dockerignore   # Docker 构建上下文排除
 ```
 
 ## API
